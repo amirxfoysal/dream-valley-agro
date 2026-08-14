@@ -1,0 +1,128 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(63, 168, 77, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(45, 90, 39, 0.12), transparent 40%),
+    var(--bg);
+}
+
+.card {
+  width: 400px;
+  max-width: 100%;
+  padding: 32px;
+  border-radius: 20px;
+  border: 1px solid var(--border-accent);
+  background: linear-gradient(160deg, var(--glass-high), var(--glass-low));
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 50px var(--shadow-card);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+
+  .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--accent-grad);
+    color: #fff;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(36, 131, 58, 0.4);
+  }
+
+  .title {
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .sub {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+
+  input {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-strong);
+      box-shadow: 0 0 0 3px rgba(63, 168, 77, 0.18);
+    }
+  }
+}
+
+.error {
+  font-size: 14px;
+  color: #d64545;
+  background: rgba(214, 69, 69, 0.1);
+  border: 1px solid rgba(214, 69, 69, 0.3);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.submit {
+  margin-top: 4px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent-grad);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(36, 131, 58, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.back {
+  display: inline-block;
+  margin-top: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

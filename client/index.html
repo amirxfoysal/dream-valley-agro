@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Dream Valley Agro</title>
+    <style>
+      #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f8f2;
+        flex-direction: column;
+        gap: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        #boot-loader {
+          background: #0d130d;
+        }
+      }
+      #boot-loader .boot-ring {
+        width: 92px;
+        height: 92px;
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(45, 138, 62, 0.18);
+        box-shadow: 0 10px 30px rgba(45, 90, 39, 0.08);
+        animation: boot-breathe 1.6s ease-in-out infinite;
+      }
+      @media (prefers-color-scheme: dark) {
+        #boot-loader .boot-ring {
+          background: rgba(38, 58, 38, 0.72);
+          border-color: rgba(127, 207, 148, 0.25);
+        }
+      }
+      #boot-loader .boot-bar {
+        width: 160px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(220, 240, 213, 0.4);
+        overflow: hidden;
+        position: relative;
+      }
+      #boot-loader .boot-bar::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        width: 40%;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #3aa84d, #24833a);
+        animation: boot-slide 1.2s ease-in-out infinite;
+      }
+      #boot-loader .boot-brand {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: #2b2f2b;
+      }
+      @media (prefers-color-scheme: dark) {
+        #boot-loader .boot-brand {
+          color: #d8e2d8;
+        }
+        #boot-loader .boot-bar {
+          background: rgba(28, 46, 28, 0.4);
+        }
+      }
+      @keyframes boot-breathe {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.06);
+        }
+      }
+      @keyframes boot-slide {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(350%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div id="boot-loader" aria-hidden="true">
+        <div class="boot-ring">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C9 2 4.5 4 3 8c-1.5 4 .5 10 3 13 1.2 1.4 2.5-1 3.5-3" stroke="#2d8a3e" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 2c2.5 0 6 1.5 8 5 1.8 3.2 2 7 .5 10.5C19 20.8 16 21 13 20" stroke="#2d8a3e" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M3 8c4 2.5 8.5 4.5 14 4M12 2v9" stroke="#2d8a3e" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="boot-brand">Dream Valley Agro</span>
+        <div class="boot-bar"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

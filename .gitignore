@@ -1,0 +1,3 @@
+# Keep .env to use the config if you create one
+.env
+.DS_Store

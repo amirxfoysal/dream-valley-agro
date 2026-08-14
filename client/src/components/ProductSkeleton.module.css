@@ -1,0 +1,149 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border-accent);
+  background: var(--glass-high);
+  overflow: hidden;
+  animation: skeletonIn 0.45s ease both;
+
+  &:nth-child(2) {
+    animation-delay: 0.08s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+
+  &:nth-child(4) {
+    animation-delay: 0.24s;
+  }
+
+  &:nth-child(5) {
+    animation-delay: 0.32s;
+  }
+
+  &:nth-child(6) {
+    animation-delay: 0.4s;
+  }
+
+  &:nth-child(7) {
+    animation-delay: 0.48s;
+  }
+
+  &:nth-child(8) {
+    animation-delay: 0.56s;
+  }
+}
+
+@keyframes skeletonIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-low);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.45),
+      transparent
+    );
+    animation: shimmer 1.4s infinite;
+  }
+}
+
+[data-theme='dark'] .shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.media {
+  height: 190px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 8px;
+}
+
+.line {
+  border-radius: 6px;
+  height: 14px;
+}
+
+.title {
+  width: 85%;
+  height: 16px;
+}
+
+.short {
+  width: 55%;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.price {
+  width: 70px;
+  height: 18px;
+  border-radius: 8px;
+}
+
+.oldPrice {
+  width: 48px;
+  height: 14px;
+}
+
+.btn {
+  margin: 10px 16px 16px;
+  height: 42px;
+  border-radius: 11px;
+}
+
+@media (max-width: 640px) {
+  .media {
+    height: 140px;
+  }
+
+  .body {
+    padding: 10px 10px 6px;
+  }
+
+  .btn {
+    margin: 6px 10px 12px;
+    height: 38px;
+    border-radius: 9px;
+  }
+}

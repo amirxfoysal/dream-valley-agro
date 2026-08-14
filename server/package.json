@@ -1,0 +1,24 @@
+{
+  "name": "dream-valley-agro-server",
+  "version": "1.0.0",
+  "description": "Backend API for Dream Valley Agro plant e-commerce",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": ["plants", "ecommerce", "express", "mongodb"],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "firebase-admin": "^13.2.0",
+    "mongoose": "^8.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
