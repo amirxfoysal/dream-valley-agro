@@ -90,6 +90,13 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;
+
+// Only listen when running locally (npm run dev / npm start).
+// On Firebase Cloud Functions (Cloud Run), K_SERVICE is set and the
+// function runtime handles serving — listening here would crash it.
+if (!process.env.K_SERVICE) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
