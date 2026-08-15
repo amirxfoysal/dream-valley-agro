@@ -1,7 +1,7 @@
 import '../src/config/db.js';
 import admin from '../src/config/firebase.js';
 
-const email = 'saniat369@gmail.com';
+const email = '';
 
 try {
   const user = await admin.auth().getUserByEmail(email);
