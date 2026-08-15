@@ -1,7 +1,7 @@
 import admin from '../src/config/firebase.js';
 
-const email = 'saniat369@gmail.com';
-const password = '123456';
+const email = '';
+const password = '';
 
 try {
   const user = await admin.auth().getUserByEmail(email);
