@@ -62,9 +62,23 @@ export const CATEGORIES = [
 ];
 
 export const DEFAULT_SUBCATEGORIES = [
-  { slug: 'native-fruit-trees', en: 'Native Fruit Trees', bn: 'দেশি ফলের গাছ', parent: 'fruit-trees', sortOrder: 1 },
-  { slug: 'exotic-fruit-trees', en: 'Exotic Fruit Trees', bn: 'বিদেশি ফলের গাছ', parent: 'fruit-trees', sortOrder: 2 },
-  { slug: 'all-season-fruit-trees', en: 'All-Season Fruit Trees', bn: 'সারাবছর ফলের গাছ', parent: 'fruit-trees', sortOrder: 3 },
+  { slug: 'citrus', en: 'Citrus', bn: 'লেবু জাতীয় ফল', parent: 'fruit-trees', sortOrder: 1 },
+  { slug: 'orange', en: 'Orange', bn: 'কমলা', parent: 'citrus', sortOrder: 1 },
+  { slug: 'mandarin', en: 'Mandarin', bn: 'ম্যান্ডারিন', parent: 'citrus', sortOrder: 2 },
+  { slug: 'kinnow', en: 'Kinnow', bn: 'কিনু', parent: 'citrus', sortOrder: 3 },
+  { slug: 'tangerine', en: 'Tangerine', bn: 'ট্যানজারিন', parent: 'citrus', sortOrder: 4 },
+  { slug: 'tangelo', en: 'Tangelo', bn: 'ট্যাঙেলো', parent: 'citrus', sortOrder: 5 },
+  { slug: 'tangor', en: 'Tangor', bn: 'ট্যাঙ্গর', parent: 'citrus', sortOrder: 6 },
+  { slug: 'grapefruit', en: 'Grapefruit', bn: 'গ্রেপফ্রুট', parent: 'citrus', sortOrder: 7 },
+  { slug: 'pomelo', en: 'Pomelo', bn: 'পমেলো', parent: 'citrus', sortOrder: 8 },
+  { slug: 'kumquat', en: 'Kumquat', bn: 'কুমকোয়াট', parent: 'citrus', sortOrder: 9 },
+  { slug: 'pomegranate', en: 'Pomegranate', bn: 'ডালিম', parent: 'fruit-trees', sortOrder: 2 },
+  { slug: 'apple', en: 'Apple', bn: 'আপেল', parent: 'fruit-trees', sortOrder: 3 },
+  { slug: 'longan', en: 'Longan', bn: 'লংগান', parent: 'fruit-trees', sortOrder: 4 },
+  { slug: 'grapes', en: 'Grapes', bn: 'আঙুর', parent: 'fruit-trees', sortOrder: 5 },
+  { slug: 'white-sapote', en: 'White Sapote', bn: 'হোয়াইট সাপোটা', parent: 'fruit-trees', sortOrder: 6 },
+  { slug: 'persimmon', en: 'Persimmon', bn: 'পার্সিমন', parent: 'fruit-trees', sortOrder: 7 },
+  { slug: 'rambutan', en: 'Rambutan', bn: 'রামবুটান', parent: 'fruit-trees', sortOrder: 8 },
   { slug: 'native-flower-plants', en: 'Native Flower Plants', bn: 'দেশি ফুলের গাছ', parent: 'flower-plants', sortOrder: 1 },
   { slug: 'exotic-flower-plants', en: 'Exotic Flower Plants', bn: 'বিদেশি ফুলের গাছ', parent: 'flower-plants', sortOrder: 2 },
   { slug: 'all-season-flower-plants', en: 'All-Season Flower Plants', bn: 'সারাবছর ফুলের গাছ', parent: 'flower-plants', sortOrder: 3 },
@@ -126,6 +140,26 @@ export const subcategoriesOf = (slug) => subcategoryList.filter((s) => s.parent 
 export const parentSlugOf = (slug) =>
   subcategoryList.find((s) => s.slug === slug)?.parent || null;
 
+export const categoryChain = (slug) => {
+  const chain = [];
+  let current = slug;
+  let guard = 0;
+  while (current && guard < 10) {
+    chain.push(current);
+    current = parentSlugOf(current);
+    guard += 1;
+  }
+  return chain;
+};
+
+export const rootSlugOf = (slug) => {
+  const chain = categoryChain(slug);
+  return chain[chain.length - 1] || slug;
+};
+
+// A view shows products assigned to the active category or directly under it.
+// Deeper nested variety products appear only when their own variant is selected,
+// e.g. Orange/Mandarin saplings show under Citrus, not under All Fruit Trees.
 export const categoryMatches = (productCategory, active) => {
   if (!active || active === 'all') return true;
   if (productCategory === active) return true;

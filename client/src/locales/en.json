@@ -8,9 +8,15 @@
     "cart": "Cart",
     "login": "Login",
     "register": "Sign up",
-    "logout": "Logout"
+    "logout": "Logout",
+    "searchPlaceholder": "Search plants…"
   },
   "toggleMenu": "Toggle menu",
+  "mobileNav": {
+    "category": "Category",
+    "profile": "Profile",
+    "ariaLabel": "Mobile navigation"
+  },
   "footer": {
     "tagline": "Bringing nature closer to home — healthy plants, trees and garden essentials delivered across Bangladesh.",
     "quickLinks": "Quick Links",
@@ -166,20 +172,23 @@
     "contact": {
       "subtitle": "Questions, feedback or plant advice — we'd love to hear from you.",
       "phoneLabel": "Phone",
-      "phone": "+880 1XXX-XXXXXX",
+      "phone": "+8801731320934",
       "emailLabel": "Email",
-      "email": "hello@dreamvalleyagro.com",
+      "email": "mahmudulhasan1937@gmail.com",
       "addressLabel": "Visit Us",
-      "address": "Dream Valley Agro, Dhaka, Bangladesh",
+      "address": "Dream Valley Agro, Chuadanga, Khulna, Bangladesh",
       "hoursLabel": "Open Hours",
-      "hours": "Sat – Thu · 9:00 AM – 7:00 PM",
-      "formTitle": "Send a Message",
-      "name": "Your name",
-      "emailField": "Email address",
-      "subject": "Subject",
-      "message": "Your message",
-      "send": "Send Message",
-      "sent": "Opening your email app…"
+      "hours": "24/7",
+      "socialTitle": "Connect With Us",
+      "socialText": "Follow us on social media and message us any time — we reply fast.",
+      "facebook": "Facebook",
+      "facebookHandle": "Dream Valley Agro",
+      "instagram": "Instagram",
+      "instagramHandle": "@mahmudulhasan08",
+      "youtube": "YouTube",
+      "youtubeHandle": "@dreamvalleyagro2.00",
+      "whatsapp": "WhatsApp",
+      "whatsappHandle": "Chat with us"
     },
     "cart": {
       "title": "Cart",
@@ -295,11 +304,22 @@
     "nav": {
       "dashboard": "Dashboard",
       "products": "Products",
+      "fruitTrees": "Fruit Trees",
       "trees": "Trees",
       "categories": "Categories",
       "orders": "Orders",
       "courier": "Courier",
-      "customers": "Customers"
+      "customers": "Customers",
+      "sectionOverview": "Overview",
+      "sectionCatalog": "Catalog",
+      "sectionSales": "Sales",
+      "sectionPeople": "People"
+    },
+    "quick": {
+      "addProduct": "+ Add product",
+      "manageFruitTrees": "Manage fruit trees",
+      "manageTrees": "Manage trees",
+      "viewOrders": "View orders"
     },
     "login": {
       "email": "Email",
@@ -323,7 +343,9 @@
       "products": "Products",
       "recentOrders": "Recent orders",
       "noOrders": "No orders yet.",
-      "loading": "Loading dashboard…"
+      "loading": "Loading dashboard…",
+      "fruitTreeItems": "Fruit tree variants",
+      "treeTypes": "Tree types"
     },
     "table": {
       "order": "Order",
@@ -346,6 +368,11 @@
       "add": "+ Add product",
       "loading": "Loading products…",
       "empty": "No products yet. Click “Add product” to create one.",
+      "searchPlaceholder": "Search products…",
+      "filterCategory": "Filter by category",
+      "allCategories": "All categories",
+      "filteredCount": "{{shown}} of {{total}} products",
+      "noMatches": "No products match your search or filter.",
       "added": "Product added",
       "updated": "Product updated",
       "deleted": "Product deleted",
@@ -440,6 +467,37 @@
       "statusUpdated": "Order {{number}} → {{status}}",
       "consignmentCreated": "SteadFast consignment created for {{number}}: {{id}}",
       "sendToSteadfast": "Send to SteadFast"
+    },
+    "fruittrees": {
+      "title": "Fruit Trees",
+      "subtitle": "Manage fruit tree variants and their varieties — add, edit, delete and upload images",
+      "add": "+ Add variant",
+      "addVariety": "Variety",
+      "loading": "Loading fruit trees…",
+      "empty": "No variants yet. Click “Add variant” to create one.",
+      "variantCol": "Variant / Variety",
+      "products": "Products",
+      "sort": "Sort",
+      "productCount": "{{count}} products",
+      "added": "Variant added",
+      "updated": "Variant updated",
+      "deleted": "Variant deleted",
+      "deleteConfirm": "Delete \"{{name}}\"? Its varieties will move up to \"{{parent}}\" and products will follow.",
+      "editTitle": "Edit fruit tree item",
+      "addTitle": "Add fruit tree item",
+      "nameEn": "Name (English) *",
+      "nameBn": "Name (Bangla)",
+      "parentLabel": "Parent *",
+      "rootParent": "Fruit Trees (top level)",
+      "sortOrder": "Sort order",
+      "image": "Image",
+      "uploadBtn": "Upload",
+      "uploading": "Uploading…",
+      "uploadTooLarge": "Image must be smaller than 5 MB",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "addSave": "Add",
+      "saving": "Saving…"
     },
     "customers": {
       "count": "{{count}} registered customers",

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson, resolveMediaUrl } from '../api/client.js';
 import {
   CATEGORIES,
   allCategorySlugs,
+  categoryBySlug,
+  rootSlugOf,
   subcategoriesOf,
   parentSlugOf,
   categoryMatches,
@@ -28,8 +30,15 @@ export default function Shop() {
   const [trees, setTrees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [query, setQuery] = useState('');
+  const searchParam = searchParams.get('search') || '';
+  const [query, setQuery] = useState(searchParam);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Sync only when the URL value actually changes, so local edits to the
+  // search box aren't wiped by unrelated param updates (category/tree chips).
+  useEffect(() => {
+    setQuery(searchParam);
+  }, [searchParam]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -37,14 +46,8 @@ export default function Shop() {
     setError('');
 
     Promise.all([
-      fetch(`${BASE_URL}/products`, { signal: controller.signal }).then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      }),
-      fetch(`${BASE_URL}/trees`, { signal: controller.signal }).then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      }),
+      fetchPublicJson('/products', controller.signal),
+      fetchPublicJson('/trees', controller.signal),
     ])
       .then(([productsData, treesData]) => {
         setProducts(Array.isArray(productsData) ? productsData : []);
@@ -118,18 +121,34 @@ export default function Shop() {
     });
   }, [products, category, treeParam, featuredParam, query]);
 
-  const activeParentSlug = parentSlugOf(category) || category;
-  const parentCategoryObj = CATEGORIES.find((c) => c.slug === activeParentSlug) || null;
-  const parentSubs = subcategoriesOf(activeParentSlug);
-  const focused = parentSubs.length > 0;
-  const parentName = parentCategoryObj ? (bn ? parentCategoryObj.bn : parentCategoryObj.en) : '';
-  const allSubLabel = parentCategoryObj
+  // Chips show the children of the active category; if it has none (leaf variety),
+  // show its siblings instead.
+  const chipsOwner =
+    subcategoriesOf(category).length > 0 ? category : parentSlugOf(category) || category;
+  const levelChips = subcategoriesOf(chipsOwner);
+  const focused = levelChips.length > 0;
+  const rootSlug = rootSlugOf(category);
+  const rootCategoryObj = CATEGORIES.find((c) => c.slug === rootSlug) || null;
+  const chipsOwnerObj = categoryBySlug(chipsOwner);
+  const deepLevel = focused && Boolean(rootCategoryObj) && rootSlug !== chipsOwner;
+  const rootName = rootCategoryObj ? (bn ? rootCategoryObj.bn : rootCategoryObj.en) : '';
+  const chipsOwnerName = chipsOwnerObj
     ? bn
-      ? `সব ${parentCategoryObj.bn}`
-      : `All ${parentCategoryObj.en}`
+      ? chipsOwnerObj.bn || chipsOwnerObj.en
+      : chipsOwnerObj.en
+    : rootName;
+  const allRootLabel = rootCategoryObj
+    ? bn
+      ? `সব ${rootCategoryObj.bn}`
+      : `All ${rootCategoryObj.en}`
     : bn
     ? 'সব ধরন'
     : 'All Types';
+  const allSubLabel = chipsOwnerObj
+    ? bn
+      ? `সব ${chipsOwnerObj.bn || chipsOwnerObj.en}`
+      : `All ${chipsOwnerObj.en}`
+    : allRootLabel;
 
   const activeTreeObj = trees.find((tr) => String(tr._id) === String(treeParam));
   const activeTreeName = activeTreeObj
@@ -150,7 +169,7 @@ export default function Shop() {
             </svg>
             {bn ? 'সব ক্যাটাগরি' : 'All categories'}
           </button>
-          <h1>{parentName}</h1>
+          <h1>{deepLevel ? chipsOwnerName : rootName}</h1>
           <p>{t('pages.shop.subtitle')}</p>
         </header>
       ) : (
@@ -216,21 +235,44 @@ export default function Shop() {
       {/* Toolbar: Category Filters & Search */}
       {focused ? (
         <div className={styles.toolbar}>
-          <div className={styles.filters} role="group" aria-label={parentName}>
+          <div className={`${styles.filters} ${styles.focusedFilters}`} role="group" aria-label={chipsOwnerName}>
+            {deepLevel && (
+              <button
+                type="button"
+                className={styles.chip}
+                onClick={() => selectCategory(rootSlug)}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ verticalAlign: '-2px', marginRight: 4 }}>
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {allRootLabel}
+              </button>
+            )}
             <button
               type="button"
-              className={`${styles.chip} ${category === activeParentSlug ? styles.active : ''}`}
-              onClick={() => selectCategory(activeParentSlug)}
+              className={`${styles.chip} ${styles.largeChip} ${category === chipsOwner ? styles.active : ''}`}
+              onClick={() => selectCategory(chipsOwner)}
             >
               {allSubLabel}
             </button>
-            {parentSubs.map((sub) => (
+            {levelChips.map((sub) => (
               <button
                 key={sub.slug}
                 type="button"
-                className={`${styles.chip} ${category === sub.slug ? styles.active : ''}`}
+                className={`${styles.chip} ${styles.largeChip} ${category === sub.slug ? styles.active : ''}`}
                 onClick={() => selectCategory(sub.slug)}
               >
+                {sub.image ? (
+                  <img
+                    src={resolveMediaUrl(sub.image)}
+                    alt=""
+                    className={styles.chipThumb}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                ) : null}
                 {bn ? sub.bn : sub.en}
               </button>
             ))}

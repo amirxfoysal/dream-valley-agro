@@ -73,14 +73,44 @@ function TruckIcon() {
   );
 }
 
-const navItems = [
-  { to: '/admin', labelKey: 'admin.nav.dashboard', end: true, Icon: DashboardIcon },
-  { to: '/admin/products', labelKey: 'admin.nav.products', end: false, Icon: PlantsIcon },
-  { to: '/admin/trees', labelKey: 'admin.nav.trees', end: false, Icon: TreeIcon },
-  { to: '/admin/categories', labelKey: 'admin.nav.categories', end: false, Icon: TagIcon },
-  { to: '/admin/orders', labelKey: 'admin.nav.orders', end: false, Icon: OrdersIcon },
-  { to: '/admin/courier', labelKey: 'admin.nav.courier', end: false, Icon: TruckIcon },
-  { to: '/admin/customers', labelKey: 'admin.nav.customers', end: false, Icon: CustomersIcon },
+function FruitTreeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21v-6M12 15c-4 0-6.5-2.6-6.5-6.2C5.5 5.4 8 3 11 3c.4 0 .8.05 1 .1.2-.05.6-.1 1-.1 3 0 5.5 2.4 5.5 5.8C18.5 12.4 16 15 12 15Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M9 9.5c.8.8 2 .8 2.8 0M12 9.5c.8.8 2 .8 2.8 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const navSections = [
+  {
+    labelKey: 'admin.nav.sectionOverview',
+    items: [
+      { to: '/admin', labelKey: 'admin.nav.dashboard', end: true, Icon: DashboardIcon },
+    ],
+  },
+  {
+    labelKey: 'admin.nav.sectionCatalog',
+    items: [
+      { to: '/admin/products', labelKey: 'admin.nav.products', end: false, Icon: PlantsIcon },
+      { to: '/admin/fruit-trees', labelKey: 'admin.nav.fruitTrees', end: false, Icon: FruitTreeIcon },
+      { to: '/admin/trees', labelKey: 'admin.nav.trees', end: false, Icon: TreeIcon },
+      { to: '/admin/categories', labelKey: 'admin.nav.categories', end: false, Icon: TagIcon },
+    ],
+  },
+  {
+    labelKey: 'admin.nav.sectionSales',
+    items: [
+      { to: '/admin/orders', labelKey: 'admin.nav.orders', end: false, Icon: OrdersIcon },
+      { to: '/admin/courier', labelKey: 'admin.nav.courier', end: false, Icon: TruckIcon },
+    ],
+  },
+  {
+    labelKey: 'admin.nav.sectionPeople',
+    items: [
+      { to: '/admin/customers', labelKey: 'admin.nav.customers', end: false, Icon: CustomersIcon },
+    ],
+  },
 ];
 
 export default function AdminLayout() {
@@ -100,19 +130,24 @@ export default function AdminLayout() {
         </div>
 
         <nav className={styles.nav}>
-          {navItems.map(({ to, labelKey, end, Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-              }
-            >
-              <Icon />
-              {t(labelKey)}
-            </NavLink>
+          {navSections.map(({ labelKey, items }) => (
+            <div key={labelKey} className={styles.navSection}>
+              <span className={styles.navSectionLabel}>{t(labelKey)}</span>
+              {items.map(({ to, labelKey: itemLabelKey, end, Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                  }
+                >
+                  <Icon />
+                  {t(itemLabelKey)}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 

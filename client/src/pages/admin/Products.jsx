@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiDelete, apiGet, apiPost, apiPut } from '../../api/client.js';
+import { apiDelete, apiGet, apiPost, apiPut, getAdminToken, resolveMediaUrl } from '../../api/client.js';
+import ImageField from '../../components/admin/ImageField.jsx';
 import {
   CATEGORIES,
+  categoryChain,
   categoryName,
 } from '../../constants/categories.js';
 import { useSubcategories } from '../../context/SubcategoriesContext.jsx';
@@ -115,7 +117,7 @@ function ProductFormModal({ initial, trees, categoryOptions, saving, onSave, onC
               <select value={form.category} onChange={(e) => set('category', e.target.value)}>
                 {categoryOptions.map((c) => (
                   <option key={c.slug} value={c.slug}>
-                    {c.parent ? `— ${bn ? c.bn : c.en}` : bn ? c.bn : c.en}
+                    {c.depth > 0 ? `${'— '.repeat(c.depth)}${bn ? c.bn : c.en}` : bn ? c.bn : c.en}
                   </option>
                 ))}
                 {!categoryOptions.some((c) => c.slug === form.category) && form.category && (
@@ -167,30 +169,24 @@ function ProductFormModal({ initial, trees, categoryOptions, saving, onSave, onC
               />
             </label>
 
-            <label className={`${styles.field} ${styles.span2}`}>
-              <span>{t('admin.products.image1')}</span>
-              <input
-                value={form.images[0] || ''}
-                onChange={(e) => set('images.0', e.target.value)}
-                placeholder="https://…"
-              />
-            </label>
-            <label className={styles.field}>
-              <span>{t('admin.products.image2')}</span>
-              <input
-                value={form.images[1] || ''}
-                onChange={(e) => set('images.1', e.target.value)}
-                placeholder="https://…"
-              />
-            </label>
-            <label className={styles.field}>
-              <span>{t('admin.products.image3')}</span>
-              <input
-                value={form.images[2] || ''}
-                onChange={(e) => set('images.2', e.target.value)}
-                placeholder="https://…"
-              />
-            </label>
+            <ImageField
+              label={t('admin.products.image1')}
+              value={form.images[0] || ''}
+              onChange={(v) => set('images.0', v)}
+              span
+            />
+            <ImageField
+              label={t('admin.products.image2')}
+              value={form.images[1] || ''}
+              onChange={(v) => set('images.1', v)}
+              span
+            />
+            <ImageField
+              label={t('admin.products.image3')}
+              value={form.images[2] || ''}
+              onChange={(v) => set('images.2', v)}
+              span
+            />
 
             <label className={`${styles.field} ${styles.span2}`}>
               <span>{t('admin.products.description')}</span>
@@ -255,10 +251,19 @@ export default function Products() {
   const { t, i18n } = useTranslation();
   const bn = i18n.resolvedLanguage === 'bn';
   const { subcategories } = useSubcategories();
-  const categoryOptions = CATEGORIES.flatMap((c) => [
-    c,
-    ...subcategories.filter((s) => s.parent === c.slug),
-  ]);
+  const buildCategoryOptions = (cats, depth = 0) =>
+    depth > 2
+      ? []
+      : cats.flatMap((c) => {
+          const children = subcategories
+            .filter((s) => s.parent === c.slug)
+            .map((s) => ({ slug: s.slug, en: s.en, bn: s.bn }));
+          return [
+            { slug: c.slug, en: c.en, bn: c.bn, depth },
+            ...buildCategoryOptions(children, depth + 1),
+          ];
+        });
+  const categoryOptions = buildCategoryOptions(CATEGORIES);
   const [products, setProducts] = useState([]);
   const [trees, setTrees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -266,8 +271,8 @@ export default function Products() {
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
-
-  const token = localStorage.getItem('dva-admin-token');
+  const [query, setQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
 
   const showToast = useCallback((msg) => {
     setToast(msg);
@@ -277,6 +282,7 @@ export default function Products() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const token = await getAdminToken();
       const [productsData, treesData] = await Promise.all([
         apiGet(token, '/admin/products'),
         apiGet(token, '/admin/trees'),
@@ -288,7 +294,7 @@ export default function Products() {
     } finally {
       setLoading(false);
     }
-  }, [token, showToast]);
+  }, [showToast]);
 
   useEffect(() => {
     load();
@@ -307,6 +313,7 @@ export default function Products() {
   const handleSave = async (data) => {
     setSaving(true);
     try {
+      const token = await getAdminToken();
       if (editing) {
         await apiPut(token, `/admin/products/${editing._id}`, data);
         showToast(t('admin.products.updated'));
@@ -326,6 +333,7 @@ export default function Products() {
   const handleDelete = async (product) => {
     if (!window.confirm(t('admin.products.deleteConfirm', { name: product.name }))) return;
     try {
+      const token = await getAdminToken();
       await apiDelete(token, `/admin/products/${product._id}`);
       showToast(t('admin.products.deleted'));
       load();
@@ -333,6 +341,17 @@ export default function Products() {
       showToast(err.message);
     }
   };
+
+  const filtered = products.filter((p) => {
+    const q = query.trim().toLowerCase();
+    const inQuery =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      (p.nameBn || '').toLowerCase().includes(q);
+    const inCategory =
+      categoryFilter === 'all' || categoryChain(p.category).includes(categoryFilter);
+    return inQuery && inCategory;
+  });
 
   return (
     <div className={styles.page}>
@@ -348,11 +367,41 @@ export default function Products() {
 
       {toast && <div className={styles.toast}>{toast}</div>}
 
+      <div className={styles.toolbar}>
+        <input
+          type="search"
+          className={styles.toolbarSearch}
+          placeholder={t('admin.products.searchPlaceholder')}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label={t('admin.products.searchPlaceholder')}
+        />
+        <select
+          className={styles.toolbarSelect}
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          aria-label={t('admin.products.filterCategory')}
+        >
+          <option value="all">{t('admin.products.allCategories')}</option>
+          {categoryOptions.map((c) => (
+            <option key={c.slug} value={c.slug}>
+              {c.depth > 0 ? `${'— '.repeat(c.depth)}${bn ? c.bn : c.en}` : bn ? c.bn : c.en}
+            </option>
+          ))}
+        </select>
+        <span className={styles.toolbarCount}>
+          {t('admin.products.filteredCount', {
+            shown: filtered.length,
+            total: products.length,
+          })}
+        </span>
+      </div>
+
       <div className={styles.panel}>
         {loading ? (
           <div className={styles.empty}>{t('admin.products.loading')}</div>
-        ) : products.length === 0 ? (
-          <div className={styles.empty}>{t('admin.products.empty')}</div>
+        ) : filtered.length === 0 ? (
+          <div className={styles.empty}>{t('admin.products.noMatches')}</div>
         ) : (
           <table className={styles.table}>
             <thead>
@@ -367,12 +416,12 @@ export default function Products() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filtered.map((p) => (
                 <tr key={p._id}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       {p.image ? (
-                        <img className={styles.thumb} src={p.image} alt={p.name} />
+                        <img className={styles.thumb} src={resolveMediaUrl(p.image)} alt={p.name} />
                       ) : (
                         <span className={styles.placeholderImg}>{(p.name || 'P').charAt(0)}</span>
                       )}

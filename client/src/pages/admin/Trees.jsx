@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiDelete, apiGet, apiPost, apiPut } from '../../api/client.js';
+import { apiDelete, apiGet, apiPost, apiPut, getAdminToken, resolveMediaUrl } from '../../api/client.js';
+import ImageField from '../../components/admin/ImageField.jsx';
 import styles from './admin.module.css';
 
 const EMPTY_FORM = {
@@ -68,10 +69,12 @@ function TreeFormModal({ initial, saving, onSave, onClose }) {
               />
             </label>
 
-            <label className={`${styles.field} ${styles.span2}`}>
-              <span>{t('admin.trees.image')}</span>
-              <input value={form.image} onChange={(e) => set('image', e.target.value)} placeholder="https://…" />
-            </label>
+            <ImageField
+              label={t('admin.trees.image')}
+              value={form.image}
+              onChange={(v) => set('image', v)}
+              span
+            />
             <label className={`${styles.field} ${styles.span2}`}>
               <span>{t('admin.trees.description')}</span>
               <textarea value={form.description} onChange={(e) => set('description', e.target.value)} />
@@ -105,8 +108,6 @@ export default function Trees() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
 
-  const token = localStorage.getItem('dva-admin-token');
-
   const showToast = useCallback((msg) => {
     setToast(msg);
     setTimeout(() => setToast(''), 2600);
@@ -115,6 +116,7 @@ export default function Trees() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const token = await getAdminToken();
       const data = await apiGet(token, '/admin/trees');
       setTrees(data);
     } catch (err) {
@@ -122,7 +124,7 @@ export default function Trees() {
     } finally {
       setLoading(false);
     }
-  }, [token, showToast]);
+  }, [showToast]);
 
   useEffect(() => {
     load();
@@ -131,6 +133,7 @@ export default function Trees() {
   const handleSave = async (data) => {
     setSaving(true);
     try {
+      const token = await getAdminToken();
       if (editing) {
         await apiPut(token, `/admin/trees/${editing._id}`, data);
         showToast(t('admin.trees.updated'));
@@ -150,6 +153,7 @@ export default function Trees() {
   const handleDelete = async (tree) => {
     if (!window.confirm(t('admin.trees.deleteConfirm', { name: tree.name }))) return;
     try {
+      const token = await getAdminToken();
       await apiDelete(token, `/admin/trees/${tree._id}`);
       showToast(t('admin.trees.deleted'));
       load();
@@ -193,7 +197,11 @@ export default function Trees() {
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       {tree.image ? (
-                        <img className={styles.thumb} src={tree.image} alt={tree.name} />
+                        <img
+                          className={styles.thumb}
+                          src={resolveMediaUrl(tree.image)}
+                          alt={tree.name}
+                        />
                       ) : (
                         <span className={styles.placeholderImg}>{(tree.name || 'T').charAt(0)}</span>
                       )}

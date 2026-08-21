@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Order from '../../models/Order.js';
+import Product from '../../models/Product.js';
 import {
   createConsignment,
   steadfastConfigured,
@@ -38,12 +39,54 @@ router.patch('/:id/status', async (req, res) => {
     if (!valid.includes(status)) {
       return res.status(400).json({ error: `Status must be one of: ${valid.join(', ')}` });
     }
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    );
+
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: 'Order not found' });
+
+    // Returning to cancelled re-reserves stock; cancelling restores it once.
+    if (status === 'cancelled' && order.status !== 'cancelled') {
+      const restore = {};
+      for (const item of order.items || []) {
+        const key = String(item.product);
+        restore[key] = (restore[key] || 0) + item.quantity;
+      }
+      await Promise.all(
+        Object.entries(restore).map(([productId, qty]) =>
+          Product.updateOne({ _id: productId }, { $inc: { stock: qty } })
+        )
+      );
+    } else if (order.status === 'cancelled' && status !== 'cancelled') {
+      const entries = Object.entries(
+        (order.items || []).reduce((acc, item) => {
+          const key = String(item.product);
+          acc[key] = (acc[key] || 0) + item.quantity;
+          return acc;
+        }, {})
+      );
+      const results = await Promise.all(
+        entries.map(([productId, qty]) =>
+          Product.updateOne({ _id: productId, stock: { $gte: qty } }, { $inc: { stock: -qty } })
+        )
+      );
+      if (results.some((r) => r.matchedCount === 0)) {
+        // Roll back any deductions that did succeed.
+        await Promise.all(
+          entries
+            .map(([productId, qty], i) =>
+              results[i].matchedCount > 0
+                ? Product.updateOne({ _id: productId }, { $inc: { stock: qty } })
+                : null
+            )
+            .filter(Boolean)
+        );
+        return res
+          .status(400)
+          .json({ error: 'Not enough stock in inventory to reopen this order.' });
+      }
+    }
+
+    order.status = status;
+    await order.save();
     res.json(order);
   } catch (err) {
     res.status(500).json({ error: 'Failed to update order', detail: err.message });

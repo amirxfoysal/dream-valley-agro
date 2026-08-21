@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiGet, apiPatch, apiPost } from '../../api/client.js';
+import { apiGet, apiPatch, apiPost, getAdminToken } from '../../api/client.js';
 import styles from './admin.module.css';
 
 const STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -35,7 +35,7 @@ export default function Orders() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const qs = filter ? `?status=${filter}` : '';
       const data = await apiGet(token, `/admin/orders${qs}`);
       setOrders(data);
@@ -52,7 +52,7 @@ export default function Orders() {
 
   const updateStatus = async (order, status) => {
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const updated = await apiPatch(token, `/admin/orders/${order._id}/status`, { status });
       setOrders((prev) => prev.map((o) => (o._id === updated._id ? updated : o)));
       showToast(t('admin.orders.statusUpdated', {
@@ -66,7 +66,7 @@ export default function Orders() {
 
   const sendToSteadfast = async (order) => {
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const updated = await apiPost(token, `/admin/orders/${order._id}/courier/steadfast`, {});
       setOrders((prev) => prev.map((o) => (o._id === updated._id ? updated : o)));
       showToast(

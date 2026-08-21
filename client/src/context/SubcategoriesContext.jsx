@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson } from '../api/client.js';
 import {
   DEFAULT_SUBCATEGORIES,
   setSubcategories,
@@ -17,6 +17,7 @@ const mapSubcategories = (list) =>
       en: s.name,
       bn: s.nameBn || s.name,
       parent: s.parent,
+      image: s.image || '',
       sortOrder: s.sortOrder || 0,
     }))
     .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -26,9 +27,7 @@ export function SubcategoriesProvider({ children }) {
 
   const reload = useCallback(async () => {
     try {
-      const res = await fetch(`${BASE_URL}/subcategories`);
-      if (!res.ok) return;
-      const list = await res.json();
+      const list = await fetchPublicJson('/subcategories');
       if (!Array.isArray(list) || list.length === 0) return;
       const mapped = mapSubcategories(list);
       setSubcategories(mapped);

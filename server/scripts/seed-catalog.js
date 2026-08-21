@@ -49,20 +49,27 @@ const POOLS = {
 const pick = (pool, i) => IMG(POOLS[pool][i % POOLS[pool].length]);
 
 const trees = [
-  { name: 'Mango', nameBn: 'আম', slug: 'mango', sortOrder: 1, image: pick('fruit', 0), description: 'The king of fruits — sweet, juicy summer varieties.', descriptionBn: 'ফলের রাজা — মিষ্টি রসালো গ্রীষ্মের জাত।' },
-  { name: 'Guava', nameBn: 'পেয়ারা', slug: 'guava', sortOrder: 2, image: pick('fruit', 1), description: 'Vitamin-rich fruit with crisp, sweet flesh.', descriptionBn: 'ভিটামিন সমৃদ্ধ মিষ্টি কুঁচকানো ফল।' },
   { name: 'Lemon', nameBn: 'লেবু', slug: 'lemon', sortOrder: 3, image: pick('fruit', 3), description: 'Tart, aromatic citrus for everyday kitchens.', descriptionBn: 'রান্নাঘরের প্রতিদিনের টক সুগন্ধি সাইট্রাস।' },
-  { name: 'Papaya', nameBn: 'পেঁপে', slug: 'papaya', sortOrder: 4, image: pick('fruit', 4), description: 'Fast-fruiting, all-season papaya varieties.', descriptionBn: 'দ্রুত ফলনশীল, সারাবছর পেঁপের জাত।' },
-  { name: 'Banana', nameBn: 'কলা', slug: 'banana', sortOrder: 5, image: pick('fruit', 7), description: 'Year-round banana varieties for home gardens.', descriptionBn: 'বাড়ির বাগানের জন্য সারাবছর কলার জাত।' },
-  { name: 'Jackfruit', nameBn: 'কাঁঠাল', slug: 'jackfruit', sortOrder: 6, image: pick('fruit', 5), description: 'Our national fruit — giant, sweet and aromatic.', descriptionBn: 'আমাদের জাতীয় ফল — বিশাল, মিষ্টি ও সুগন্ধি।' },
-  { name: 'Litchi', nameBn: 'লিচু', slug: 'litchi', sortOrder: 7, image: pick('fruit', 2), description: 'Juicy summer favorite with ruby flesh.', descriptionBn: 'রসালো গ্রীষ্মের প্রিয় রুবি শাঁসের ফল।' },
-  { name: 'Dragon Fruit', nameBn: 'ড্রাগন ফ্রুট', slug: 'dragon-fruit', sortOrder: 8, image: pick('fruit', 6), description: 'Exotic cactus fruit with striking pink skin.', descriptionBn: 'চমৎকার গোলাপি খোসার বিদেশি ক্যাকটাস ফল।' },
 ];
 
 const DESC = {
-  'native-fruit-trees': (n, b) => [`Healthy graft-grown ${n} sapling from our own nursery, acclimatized to Bangladesh weather and ready to plant.`, `আমাদের নার্সারিতে জোড় কলমে তৈরি সুস্থ ${b} চারা — বাংলাদেশের আবহাওয়ায় অভ্যস্ত ও রোপণের জন্য প্রস্তুত।`],
-  'exotic-fruit-trees': (n, b) => [`Imported ${n} plant, carefully raised in local conditions so it thrives in your garden from day one.`, `বিদেশ থেকে আনা ${b} গাছ — স্থানীয় আবহাওয়ায় মানিয়ে বড় করা, যা প্রথম দিন থেকেই আপনার বাগানে ভালো বাড়বে।`],
-  'all-season-fruit-trees': (n, b) => [`High-yielding ${n} that fruits almost all year round — perfect for continuous home harvest.`, `প্রায় সারাবছর ফল দেয় এমন উচ্চফলনশীল ${b} — ঘরে নিরবচ্ছিন্ন ফসল তোলার জন্য আদর্শ।`],
+  citrus: (n, b) => [`Vitamin-C rich ${n} — fragrant flowers and juicy fruit straight from your garden.`, `ভিটামিন-সি সমৃদ্ধ ${b} — বাগান থেকেই সুগন্ধি ফুল ও রসালো ফল।`],
+  orange: (n, b) => [`Sweet, easy-to-peel ${n} — a heavy bearer for home orchards.`, `মিষ্টি, সহজে খোসা ছাড়ানো ${b} — ঘরের বাগানের জন্য উচ্চফলনশীল।`],
+  mandarin: (n, b) => [`Compact ${n} tree that fruits sweet, sun-ripened treats.`, `মিষ্টি রসালো ফলের ছোট আকারের ${b} গাছ।`],
+  kinnow: (n, b) => [`Juicy ${n} — the beloved winter citrus of Bangladesh.`, `রসালো ${b} — বাংলাদেশের প্রিয় শীতের লেবু জাতীয় ফল।`],
+  tangerine: (n, b) => [`Bright, sweet ${n} with loose, easy-peel skin.`, `উজ্জ্বল মিষ্টি ${b} — খোসা সহজে ছাড়ে।`],
+  tangelo: (n, b) => [`Tangy-sweet ${n}, a tangerine-grapefruit hybrid bursting with juice.`, `টক-মিষ্টি ${b} — রসে ভরপুর ট্যানজারিন-গ্রেপফ্রুট সংকর।`],
+  tangor: (n, b) => [`Firm, rich-flavored ${n} that stores well on the tree.`, `গাছে দীর্ঘদিন ভালো থাকা দৃঢ় সুগন্ধি ${b}।`],
+  grapefruit: (n, b) => [`Refreshing, slightly tart ${n} for a healthy morning harvest.`, `সতেজ, হালকা টক ${b} — সকালের সুস্থ ফসল।`],
+  pomelo: (n, b) => [`Giant, sweet ${n} — the granddaddy of citrus fruits.`, `বিশাল মিষ্টি ${b} — লেবু জাতীয় ফলের মহারথ।`],
+  kumquat: (n, b) => [`Tiny edible-skin ${n}, perfect for pots and balconies.`, `ছোট খোসাসহ-খাওয়া ${b} — টব ও বারান্দার জন্য আদর্শ।`],
+  pomegranate: (n, b) => [`Ruby-seeded ${n}, prized for its sweet-tart arils and health benefits.`, `মিষ্টি-টক দানাদার ফলের জন্য বিখ্যাত ${b}।`],
+  apple: (n, b) => [`Low-chill ${n} variety suited to Bangladesh's climate.`, `বাংলাদেশের আবহাওয়ায় মানিয়ে নেওয়া লো-চিল ${b} জাত।`],
+  longan: (n, b) => [`Litchi-family ${n} with sweet, translucent flesh in thin shells.`, `পাতলা খোসার ভেতরে মিষ্টি রসালো শাঁসের লিচু পরিবারের ${b}।`],
+  grapes: (n, b) => [`Heavy-bearing ${n} vine that thrives on rooftops and pergolas.`, `ছাদ ও পারগোলায় ভালো জন্মানো উচ্চফলনশীল ${b} লতা।`],
+  'white-sapote': (n, b) => [`Creamy, custard-sweet ${n} — a rare exotic treat for collectors.`, `ক্রিমি, কাস্টার্ড-মিষ্টি ${b} — কালেক্টরদের জন্য বিরল বিদেশি ফল।`],
+  persimmon: (n, b) => [`Honey-sweet ${n} that ripens to a glossy orange delight.`, `মধুর মতো মিষ্টি, উজ্জ্বল কমলা রঙে পাকা ${b}।`],
+  rambutan: (n, b) => [`Hairy-skinned, lychee-like ${n} with juicy sweet flesh.`, `লোমশ খোসার ভেতরে লিচুর মতো রসালো মিষ্টি ${b}।`],
   'native-flower-plants': (n, b) => [`Beloved Bangladeshi ${n} — fills your garden, roof or balcony with familiar fragrance and color.`, `বাংলাদেশের প্রিয় ${b} — ছাদ বা বারান্দায় পরিচিত সুবাস ও রঙে ভরিয়ে তুলুক।`],
   'exotic-flower-plants': (n, b) => [`Premium imported ${n} variety with show-stopping blooms that elevate any space.`, `চমকপ্রদ ফুলের জন্য বিখ্যাত আমদানি করা উন্নত ${b} জাত।`],
   'all-season-flower-plants': (n, b) => [`Hardy ${n} that keeps blooming through every season with very little care.`, `খুব কম যত্নেই প্রতিটি মৌসুমে ফুল ধরে এমন মজবুত ${b}।`],
@@ -94,24 +101,27 @@ const DESC = {
 
 // [name, nameBn, subcategory, price, pool, treeSlug?]
 const PRODUCTS = [
-  // Fruit Trees — Native
-  ['Himsagar Mango Sapling', 'হিমসাগর আমের চারা', 'native-fruit-trees', 2200, 'fruit', 'mango'],
-  ['Langra Mango Sapling', 'ল্যাংড়া আমের চারা', 'native-fruit-trees', 2400, 'fruit', 'mango'],
-  ['Kazi Peyara Sapling', 'কাজি পেয়ারার চারা', 'native-fruit-trees', 900, 'fruit', 'guava'],
-  ['China-3 Litchi Sapling', 'চায়না-৩ লিচুর চারা', 'native-fruit-trees', 1600, 'fruit', 'litchi'],
-  ['Deshi Jam Sapling', 'দেশি জামের চারা', 'native-fruit-trees', 750, 'fruit', 'jackfruit'],
-  // Fruit Trees — Exotic
-  ['Thailand Guava Sapling', 'থাই পেয়ারার চারা', 'exotic-fruit-trees', 1100, 'fruit', 'guava'],
-  ['Dragon Fruit Plant', 'ড্রাগন ফ্রুট গাছ', 'exotic-fruit-trees', 1400, 'fruit', 'dragon-fruit'],
-  ['Avocado Plant', 'অ্যাভোকাডো গাছ', 'exotic-fruit-trees', 1800, 'fruit', null],
-  ['Kagzi Orange Sapling', 'কাগজি কমলার চারা', 'exotic-fruit-trees', 1500, 'fruit', null],
-  ['Rambutan Sapling', 'রামবুটান চারা', 'exotic-fruit-trees', 1900, 'fruit', null],
-  // Fruit Trees — All-Season
-  ['BARI Papaya Seedling', 'বারি পেঁপের চারা', 'all-season-fruit-trees', 150, 'fruit', 'papaya'],
-  ['Sagar Kola Sapling', 'সাগর কলার চারা', 'all-season-fruit-trees', 350, 'fruit', 'banana'],
-  ['Elachi Lemon Sapling', 'এলাচি লেবুর চারা', 'all-season-fruit-trees', 600, 'fruit', 'lemon'],
-  ['Abu Mango Sapling', 'আবু আমের চারা', 'all-season-fruit-trees', 2000, 'fruit', 'mango'],
-  ['Thailand Malta Sapling', 'থাই মালটার চারা', 'all-season-fruit-trees', 1300, 'fruit', null],
+  // Fruit Trees — citrus varieties
+  ['Kagzi Orange Sapling', 'কাগজি কমলার চারা', 'orange', 1500, 'fruit', null],
+  ['Valencia Orange Sapling', 'ভ্যালেনসিয়া কমলার চারা', 'orange', 1600, 'fruit', null],
+  ['Thailand Malta Sapling', 'থাই মালটার চারা', 'orange', 1300, 'fruit', null],
+  ['Elachi Lemon Sapling', 'এলাচি লেবুর চারা', 'citrus', 600, 'fruit', 'lemon'],
+  ['Daisy Mandarin Sapling', 'ডেইজি ম্যান্ডারিনের চারা', 'mandarin', 1400, 'fruit', null],
+  ['Kinnow Sapling', 'কিনুর চারা', 'kinnow', 1350, 'fruit', null],
+  ['Dancy Tangerine Sapling', 'ড্যান্সি ট্যানজারিনের চারা', 'tangerine', 1450, 'fruit', null],
+  ['Minneola Tangelo Sapling', 'মিনিওলা ট্যাঙেলোর চারা', 'tangelo', 1550, 'fruit', null],
+  ['Ortanique Tangor Sapling', 'অর্টানিক ট্যাঙ্গরের চারা', 'tangor', 1500, 'fruit', null],
+  ['Ruby Red Grapefruit Sapling', 'রুবি রেড গ্রেপফ্রুটের চারা', 'grapefruit', 1650, 'fruit', null],
+  ['Chandler Pomelo Sapling', 'চ্যান্ডলার পমেলোর চারা', 'pomelo', 1700, 'fruit', null],
+  ['Nagami Kumquat Plant', 'নাগামি কুমকোয়াট গাছ', 'kumquat', 1200, 'fruit', null],
+  ['Bedana Pomegranate Sapling', 'বেদানা ডালিমের চারা', 'pomegranate', 1700, 'fruit', null],
+  ['Sweet Pomegranate Sapling', 'মিষ্টি ডালিমের চারা', 'pomegranate', 1800, 'fruit', null],
+  ['Low-Chill Apple Sapling', 'লো-চিল আপেলের চারা', 'apple', 2100, 'fruit', null],
+  ['Longan Sapling', 'লংগানের চারা', 'longan', 1900, 'fruit', null],
+  ['Thompson Grapes Cutting', 'থমসন আঙুরের কাটিং', 'grapes', 900, 'fruit', null],
+  ['White Sapote Plant', 'হোয়াইট সাপোটা গাছ', 'white-sapote', 2200, 'fruit', null],
+  ['Persimmon Sapling', 'পার্সিমনের চারা', 'persimmon', 2000, 'fruit', null],
+  ['Rambutan Sapling', 'রামবুটান চারা', 'rambutan', 1900, 'fruit', null],
   // Flowers — Native
   ['Gandharaj Plant', 'গন্ধরাজ গাছ', 'native-flower-plants', 450, 'flower', null],
   ['Beli Plant', 'বেলি গাছ', 'native-flower-plants', 350, 'flower', null],

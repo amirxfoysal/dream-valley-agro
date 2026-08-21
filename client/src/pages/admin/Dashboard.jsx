@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { apiGet } from '../../api/client.js';
+import { apiGet, fetchPublicJson, getAdminToken } from '../../api/client.js';
 import { useAdminAuth } from '../../context/AdminAuthContext.jsx';
+import { useSubcategories } from '../../context/SubcategoriesContext.jsx';
+import { categoryChain } from '../../constants/categories.js';
 import styles from './admin.module.css';
 
 function formatBDT(n) {
@@ -57,16 +60,45 @@ function ClockIcon() {
   );
 }
 
+function FruitIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21v-6M12 15c-4 0-6.5-2.6-6.5-6.2C5.5 5.4 8 3 11 3c.4 0 .8.05 1 .1.2-.05.6-.1 1-.1 3 0 5.5 2.4 5.5 5.8C18.5 12.4 16 15 12 15Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function TreeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 22V9M12 9l-3.5 4M12 9l3.5 4M12 7c0-1.7-1.3-3-2.6-4.6.6.2 1.8.2 2.6 0 .8.2 2 0 2.6 0C13.3 4 12 5.3 12 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const quickActions = [
+  { to: '/admin/products', labelKey: 'admin.quick.addProduct' },
+  { to: '/admin/fruit-trees', labelKey: 'admin.quick.manageFruitTrees' },
+  { to: '/admin/trees', labelKey: 'admin.quick.manageTrees' },
+  { to: '/admin/orders', labelKey: 'admin.quick.viewOrders' },
+];
+
 export default function Dashboard() {
   const { admin } = useAdminAuth();
   const { t } = useTranslation();
+  const { subcategories } = useSubcategories();
   const [stats, setStats] = useState(null);
   const [error, setError] = useState('');
+  const [treesCount, setTreesCount] = useState(null);
+
+  const fruitTreeItems = subcategories.filter((s) =>
+    categoryChain(s.slug).includes('fruit-trees')
+  ).length;
 
   const load = async () => {
     setError('');
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const data = await apiGet(token, '/admin/stats');
       setStats(data);
     } catch (err) {
@@ -76,6 +108,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     load();
+  }, []);
+
+  useEffect(() => {
+    fetchPublicJson('/trees')
+      .then((data) => setTreesCount(Array.isArray(data) ? data.length : 0))
+      .catch(() => setTreesCount(null));
   }, []);
 
   const statusFor = (status) => {
@@ -107,6 +145,20 @@ export default function Dashboard() {
             <StatCard label={t('admin.dashboard.totalOrders')} value={stats.orders} Icon={OrdersIcon} />
             <StatCard label={t('admin.dashboard.pendingOrders')} value={stats.pendingOrders} Icon={ClockIcon} />
             <StatCard label={t('admin.dashboard.products')} value={stats.products} Icon={PlantsIcon} />
+            <StatCard label={t('admin.dashboard.fruitTreeItems')} value={fruitTreeItems} Icon={FruitIcon} />
+            <StatCard
+              label={t('admin.dashboard.treeTypes')}
+              value={treesCount ?? '—'}
+              Icon={TreeIcon}
+            />
+          </div>
+
+          <div className={styles.quickActions}>
+            {quickActions.map(({ to, labelKey }) => (
+              <Link key={to} to={to} className={styles.quickActionBtn}>
+                {t(labelKey)}
+              </Link>
+            ))}
           </div>
 
           <div className={styles.panel}>

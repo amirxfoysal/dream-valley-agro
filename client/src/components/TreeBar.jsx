@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson } from '../api/client.js';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductSkeleton from '../components/ProductSkeleton.jsx';
 import styles from './TreeBar.module.css';
@@ -19,11 +19,8 @@ export default function TreeBar() {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    fetch(`${BASE_URL}/trees`, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    setError('');
+    fetchPublicJson('/trees', controller.signal)
       .then((data) => {
         const list = Array.isArray(data) ? data : [];
         setTrees(list);
@@ -41,11 +38,8 @@ export default function TreeBar() {
     const controller = new AbortController();
     setVarieties([]);
     setVarietyLoading(true);
-    fetch(`${BASE_URL}/products?tree=${selected}`, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    setError('');
+    fetchPublicJson(`/products?tree=${selected}`, controller.signal)
       .then((data) => setVarieties(Array.isArray(data) ? data : []))
       .catch((err) => {
         if (err.name !== 'AbortError') setError(t('shop.error'));

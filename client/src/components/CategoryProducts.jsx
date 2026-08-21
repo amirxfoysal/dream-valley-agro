@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson } from '../api/client.js';
 import { CATEGORIES, categoryMatches } from '../constants/categories.js';
 import { useSubcategories } from '../context/SubcategoriesContext.jsx';
 import ProductCard from './ProductCard.jsx';
@@ -20,11 +20,8 @@ export default function CategoryProducts() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`${BASE_URL}/products`, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    setError('');
+    fetchPublicJson('/products', controller.signal)
       .then((data) => setProducts(Array.isArray(data) ? data : []))
       .catch((err) => {
         if (err.name !== 'AbortError') setError(t('shop.error'));

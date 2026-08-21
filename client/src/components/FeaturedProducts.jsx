@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson } from '../api/client.js';
 import ProductCard from './ProductCard.jsx';
 import ProductSkeleton from './ProductSkeleton.jsx';
 import styles from './FeaturedProducts.module.css';
@@ -14,11 +14,8 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`${BASE_URL}/products?featured=true`, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    setError('');
+    fetchPublicJson('/products?featured=true', controller.signal)
       .then((data) => setProducts(Array.isArray(data) ? data : []))
       .catch((err) => {
         if (err.name !== 'AbortError') setError(t('shop.error'));

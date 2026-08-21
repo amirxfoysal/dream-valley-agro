@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiDelete, apiGet, apiPost, apiPut } from '../../api/client.js';
+import { apiDelete, apiGet, apiPost, apiPut, getAdminToken } from '../../api/client.js';
 import { CATEGORIES } from '../../constants/categories.js';
 import { useSubcategories } from '../../context/SubcategoriesContext.jsx';
 import styles from './admin.module.css';
@@ -28,9 +28,8 @@ function TrashIcon() {
   );
 }
 
-function SubcategoryFormModal({ initial, saving, onSave, onClose }) {
-  const { t, i18n } = useTranslation();
-  const bn = i18n.resolvedLanguage === 'bn';
+function SubcategoryFormModal({ initial, parentOptions, saving, onSave, onClose }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(initial ? { ...EMPTY_FORM, ...initial } : EMPTY_FORM);
 
   const set = (path, value) => setForm((prev) => ({ ...prev, [path]: value }));
@@ -64,9 +63,9 @@ function SubcategoryFormModal({ initial, saving, onSave, onClose }) {
             <label className={styles.field}>
               <span>{t('admin.categories.parentLabel')}</span>
               <select value={form.parent} onChange={(e) => set('parent', e.target.value)}>
-                {CATEGORIES.map((c) => (
-                  <option key={c.slug} value={c.slug}>
-                    {bn ? c.bn : c.en}
+                {parentOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.depth > 0 ? `${'— '.repeat(o.depth)}${o.label}` : o.label}
                   </option>
                 ))}
               </select>
@@ -95,10 +94,9 @@ function SubcategoryFormModal({ initial, saving, onSave, onClose }) {
   );
 }
 
-const parentName = (slug) => CATEGORIES.find((c) => c.slug === slug)?.en || slug;
-
 export default function Categories() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const bn = i18n.resolvedLanguage === 'bn';
   const { reload: reloadPublic } = useSubcategories();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +105,35 @@ export default function Categories() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
 
-  const token = localStorage.getItem('dva-admin-token');
+  // Flatten main categories + nested subcategories into selectable parent options.
+  const buildParentOptions = (list, depth = 0) =>
+    depth > 2
+      ? []
+      : list.flatMap((item) => {
+          const label = bn ? item.nameBn || item.name || item.bn : item.name || item.en;
+          const children = subs
+            .filter((s) => s.parent === item.slug)
+            .map((s) => ({ slug: s.slug, name: s.name, nameBn: s.nameBn }));
+          return [
+            { slug: item.slug, label, depth },
+            ...buildParentOptions(children, depth + 1),
+          ];
+        });
+
+  const parentOptions = buildParentOptions(
+    CATEGORIES.map((c) => ({ slug: c.slug, name: bn ? c.bn : c.en, nameBn: c.bn }))
+  );
+
+  const parentLabel = (slug) => {
+    const main = CATEGORIES.find((c) => c.slug === slug);
+    if (main) return main.en;
+    const sub = subs.find((s) => s.slug === slug);
+    if (sub) {
+      const mainParent = CATEGORIES.find((c) => c.slug === sub.parent);
+      return mainParent ? `${mainParent.en} › ${sub.name}` : sub.name;
+    }
+    return slug;
+  };
 
   const showToast = useCallback((msg) => {
     setToast(msg);
@@ -117,6 +143,7 @@ export default function Categories() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const token = await getAdminToken();
       const data = await apiGet(token, '/admin/subcategories');
       setSubs(data);
     } catch (err) {
@@ -124,7 +151,7 @@ export default function Categories() {
     } finally {
       setLoading(false);
     }
-  }, [token, showToast]);
+  }, [showToast]);
 
   useEffect(() => {
     load();
@@ -133,6 +160,7 @@ export default function Categories() {
   const handleSave = async (data) => {
     setSaving(true);
     try {
+      const token = await getAdminToken();
       if (editing) {
         await apiPut(token, `/admin/subcategories/${editing._id}`, data);
         showToast(t('admin.categories.updated'));
@@ -153,11 +181,12 @@ export default function Categories() {
   const handleDelete = async (sub) => {
     if (
       !window.confirm(
-        t('admin.categories.deleteConfirm', { name: sub.name, parent: parentName(sub.parent) })
+        t('admin.categories.deleteConfirm', { name: sub.name, parent: parentLabel(sub.parent) })
       )
     )
       return;
     try {
+      const token = await getAdminToken();
       await apiDelete(token, `/admin/subcategories/${sub._id}`);
       showToast(t('admin.categories.deleted'));
       load();
@@ -218,7 +247,7 @@ export default function Categories() {
                       </div>
                     </div>
                   </td>
-                  <td>{parentName(sub.parent)}</td>
+                  <td>{parentLabel(sub.parent)}</td>
                   <td>{sub.sortOrder}</td>
                   <td>
                     <span
@@ -261,6 +290,7 @@ export default function Categories() {
       {modalOpen && (
         <SubcategoryFormModal
           initial={editing}
+          parentOptions={parentOptions}
           saving={saving}
           onSave={handleSave}
           onClose={() => setModalOpen(false)}

@@ -99,11 +99,24 @@ router.post('/', async (req, res) => {
 
     const shipping = computeShipping(subtotal);
     const total = subtotal + shipping;
-    const paymentMethod = payment?.method === 'cod' ? 'cod' : 'cod';
+    const paymentMethod = 'cod';
+
+    // Random suffix can collide on the unique index; retry with a fresh number.
+    const createOrder = async (payload, attempts = 3) => {
+      for (let i = 0; i < attempts; i += 1) {
+        try {
+          return await Order.create(payload);
+        } catch (err) {
+          if (err?.code === 11000 && err?.keyPattern?.orderNumber) continue;
+          throw err;
+        }
+      }
+      throw new Error('Could not generate a unique order number');
+    };
 
     let order;
     try {
-      order = await Order.create({
+      order = await createOrder({
         firebaseUid: req.user.uid,
         customer: {
           name,

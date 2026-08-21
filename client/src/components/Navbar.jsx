@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import UserMenu from './UserMenu.jsx';
 import styles from './Navbar.module.css';
+
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function LeafIcon() {
   return (
@@ -50,6 +59,9 @@ function CartIcon() {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate();
   const { count } = useCart();
   const { t } = useTranslation();
   const links = [
@@ -58,6 +70,15 @@ export default function Navbar() {
     { to: '/about', label: t('nav.about'), end: false },
     { to: '/contact', label: t('nav.contact'), end: false },
   ];
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const q = search.trim();
+    navigate(q ? `/shop?search=${encodeURIComponent(q)}` : '/shop');
+    setSearch('');
+    setSearchOpen(false);
+    setOpen(false);
+  };
 
   const renderCart = (variant) => (
     <NavLink
@@ -82,6 +103,20 @@ export default function Navbar() {
           </span>
           <span>Dream Valley Agro</span>
         </Link>
+
+        <form className={styles.searchForm} onSubmit={handleSearch} role="search">
+          <span className={styles.searchIcon}>
+            <SearchIcon />
+          </span>
+          <input
+            type="search"
+            className={styles.searchInput}
+            placeholder={t('nav.searchPlaceholder')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label={t('nav.searchPlaceholder')}
+          />
+        </form>
 
         <div className={styles.right}>
           <div className={`${styles.links} ${open ? styles.linksOpen : ''}`}>
@@ -108,6 +143,37 @@ export default function Navbar() {
           </div>
 
           {renderCart(styles.cartFloat)}
+
+          <div className={styles.compactSearch}>
+            {searchOpen ? (
+              <form className={styles.compactForm} onSubmit={handleSearch} role="search">
+                <span className={styles.searchIcon}>
+                  <SearchIcon />
+                </span>
+                <input
+                  type="search"
+                  autoFocus
+                  className={styles.searchInput}
+                  placeholder={t('nav.searchPlaceholder')}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onBlur={() => {
+                    if (!search.trim()) setSearchOpen(false);
+                  }}
+                  aria-label={t('nav.searchPlaceholder')}
+                />
+              </form>
+            ) : (
+              <button
+                type="button"
+                className={styles.compactButton}
+                aria-label={t('nav.searchPlaceholder')}
+                onClick={() => setSearchOpen(true)}
+              >
+                <SearchIcon />
+              </button>
+            )}
+          </div>
 
           <button
             type="button"

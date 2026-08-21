@@ -77,7 +77,8 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  word-break: break-word;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .unitPrice {
@@ -265,10 +266,34 @@
 @media (max-width: 560px) {
   .item {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  /* Name + price fill the first row beside the thumbnail… */
+  .info {
+    flex: 1 1 auto;
+    min-width: calc(100% - 84px); /* thumb width + gap */
+  }
+
+  .name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* …while qty, line total and remove wrap to their own right-aligned row */
+  .qty {
+    margin-left: auto;
   }
 
   .lineTotal {
-    margin-left: auto;
+    min-width: 0;
+    text-align: right;
+  }
+
+  .remove {
+    flex-shrink: 0;
   }
 }

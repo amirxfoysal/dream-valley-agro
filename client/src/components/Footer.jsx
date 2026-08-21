@@ -53,7 +53,7 @@ export default function Footer() {
           <p className={styles.tagline}>{t('footer.tagline')}</p>
           <div className={styles.socials}>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/share/1Dpf69Syxa/"
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook"
@@ -67,7 +67,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/mahmudulhasan08?igsi=MXh5bHUzemxtMmtvdA=="
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"
@@ -80,7 +80,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://youtube.com"
+              href="https://youtube.com/@dreamvalleyagro2.00?si=BGz3Snsmp7E6p4ri"
               target="_blank"
               rel="noreferrer"
               aria-label="YouTube"
@@ -92,7 +92,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://wa.me/8801000000000"
+              href="https://wa.me/message/RGNQODK37ZLJH1"
               target="_blank"
               rel="noreferrer"
               aria-label="WhatsApp"
@@ -152,7 +152,7 @@ export default function Footer() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <a href="tel:+8801000000000" className={styles.link}>
+              <a href="tel:+8801731320934" className={styles.link}>
                 {t('pages.contact.phone')}
               </a>
             </li>
@@ -161,7 +161,7 @@ export default function Footer() {
                 <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.6" />
                 <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <a href="mailto:hello@dreamvalleyagro.com" className={styles.link}>
+              <a href="mailto:mahmudulhasan1937@gmail.com" className={styles.link}>
                 {t('pages.contact.email')}
               </a>
             </li>

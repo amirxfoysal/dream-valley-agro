@@ -107,6 +107,110 @@
   gap: 8px;
 }
 
+.searchForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border-accent);
+  background: linear-gradient(135deg, var(--glass-high), var(--glass-low));
+  box-shadow: 0 1px 0 var(--glass-high) inset;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.searchForm:focus-within {
+  border-color: var(--primary-strong);
+  box-shadow: 0 0 0 3px var(--shadow-soft);
+}
+
+.searchIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  width: 170px;
+  padding: 9px 14px 9px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.searchInput::placeholder {
+  color: var(--muted);
+}
+
+.searchInput::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.compactSearch {
+  display: none;
+}
+
+.compactButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--border-accent);
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--glass-high), var(--glass-low));
+  color: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 1px 0 var(--glass-high) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.compactButton:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 var(--glass-high) inset,
+    0 4px 10px var(--shadow-soft);
+}
+
+.compactForm {
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--primary-strong);
+  background: linear-gradient(135deg, var(--glass-high), var(--glass-low));
+  box-shadow: 0 0 0 3px var(--shadow-soft);
+  overflow: hidden;
+  animation: compactIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.compactForm .searchIcon {
+  width: 34px;
+}
+
+.compactForm .searchInput {
+  width: min(150px, 38vw);
+  padding: 9px 14px 9px 0;
+}
+
+@keyframes compactIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .links {
   display: flex;
   align-items: center;
@@ -292,6 +396,16 @@
 }
 
 /* mobile dropdown animation */
+@media (max-width: 900px) {
+  .searchForm {
+    display: none;
+  }
+
+  .compactSearch {
+    display: block;
+  }
+}
+
 @media (max-width: 640px) {
   .toggle {
     display: flex;
@@ -342,8 +456,9 @@
     display: none;
   }
 
+  /* Cart lives in the mobile bottom navbar, so hide the top-bar cart too */
   .cartFloat {
-    display: inline-flex;
+    display: none;
   }
 
   .cartLink {

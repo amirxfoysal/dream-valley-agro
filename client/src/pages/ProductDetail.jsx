@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext.jsx';
-import { BASE_URL } from '../api/client.js';
+import { fetchPublicJson } from '../api/client.js';
 import styles from './ProductDetail.module.css';
 
 function formatBDT(n) {
@@ -31,18 +31,12 @@ export default function ProductDetail() {
     const controller = new AbortController();
     setLoading(true);
     setError('');
-    fetch(`${BASE_URL}/products/${id}`, { signal: controller.signal })
-      .then((res) => {
-        if (res.status === 404) {
-          navigate('/shop', { replace: true });
-          throw new Error('Product not found');
-        }
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    fetchPublicJson(`/products/${id}`, controller.signal)
       .then((data) => setProduct(data))
       .catch((err) => {
-        if (err.name !== 'AbortError' && err.message !== 'Product not found') {
+        if (err.status === 404) {
+          navigate('/shop', { replace: true });
+        } else if (err.name !== 'AbortError') {
           setError(t('shop.error'));
         }
       })

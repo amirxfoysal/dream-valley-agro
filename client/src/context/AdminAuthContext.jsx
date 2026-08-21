@@ -1,31 +1,21 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
 import {
   apiGet,
   loginWithEmailPassword,
   logoutFirebase,
   auth,
+  ADMIN_TOKEN_KEY,
 } from '../api/client.js';
 
 const AdminAuthContext = createContext(null);
 
-const TOKEN_KEY = 'dva-admin-token';
+const TOKEN_KEY = ADMIN_TOKEN_KEY;
 
 export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const getToken = useCallback(() => {
-    try {
-      const t = localStorage.getItem(TOKEN_KEY);
-      auth.currentUser?.getIdToken().then((fresh) => {
-        if (fresh && fresh !== t) localStorage.setItem(TOKEN_KEY, fresh);
-      });
-      return t;
-    } catch {
-      return null;
-    }
-  }, []);
 
   const verify = useCallback(async (token) => {
     const me = await apiGet(token, '/admin/me');
@@ -34,18 +24,37 @@ export function AdminAuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-    verify(token)
-      .catch(() => {
-        localStorage.removeItem(TOKEN_KEY);
-        setAdmin(null);
-      })
-      .finally(() => setLoading(false));
-  }, [verify, getToken]);
+    let cancelled = false;
+
+    // Firebase restores the session asynchronously; wait for it so we verify
+    // with a fresh token instead of a stale one that may have expired.
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+      const cached = localStorage.getItem(TOKEN_KEY);
+      if (!fbUser && !cached) {
+        setLoading(false);
+        return;
+      }
+      const token = fbUser ? await fbUser.getIdToken() : cached;
+      if (cancelled) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      verify(token)
+        .catch(() => {
+          localStorage.removeItem(TOKEN_KEY);
+          setAdmin(null);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    });
+
+    return () => {
+      cancelled = true;
+      unsub();
+    };
+  }, [verify]);
 
   const login = async (email, password) => {
     setError('');

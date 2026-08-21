@@ -25,6 +25,7 @@ import AdminDashboard from './pages/admin/Dashboard.jsx';
 import AdminProducts from './pages/admin/Products.jsx';
 import AdminTrees from './pages/admin/Trees.jsx';
 import AdminCategories from './pages/admin/Categories.jsx';
+import AdminFruitTrees from './pages/admin/FruitTrees.jsx';
 import AdminCustomers from './pages/admin/Customers.jsx';
 import AdminOrders from './pages/admin/Orders.jsx';
 import AdminCourier from './pages/admin/Courier.jsx';
@@ -87,6 +88,7 @@ export default function App() {
                   <Route index element={<AdminDashboard />} />
                   <Route path="products" element={<AdminProducts />} />
                   <Route path="trees" element={<AdminTrees />} />
+                  <Route path="fruit-trees" element={<AdminFruitTrees />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="customers" element={<AdminCustomers />} />
                   <Route path="orders" element={<AdminOrders />} />

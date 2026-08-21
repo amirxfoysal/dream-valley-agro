@@ -8,9 +8,15 @@
     "cart": "কার্ট",
     "login": "লগইন",
     "register": "সাইন আপ",
-    "logout": "লগআউট"
+    "logout": "লগআউট",
+    "searchPlaceholder": "গাছ খুঁজুন…"
   },
   "toggleMenu": "মেনু টগল করুন",
+  "mobileNav": {
+    "category": "ক্যাটাগরি",
+    "profile": "প্রোফাইল",
+    "ariaLabel": "মোবাইল নেভিগেশন"
+  },
   "footer": {
     "tagline": "প্রকৃতি ঘরে নিয়ে আসুন — সুস্থ গাছপালা ও বাগানের প্রয়োজনীয় জিনিসপাত্র সারা বাংলাদেশে পৌঁছে দিই।",
     "quickLinks": "দ্রুত লিংক",
@@ -166,20 +172,23 @@
     "contact": {
       "subtitle": "প্রশ্ন, মতামত বা গাছের পরামর্শ — আপনার কথা শুনতে আমরা আগ্রহী।",
       "phoneLabel": "ফোন",
-      "phone": "+৮৮০ ১XXX-XXXXXX",
+      "phone": "+৮৮০১৭৩১৩২০৯৩৪",
       "emailLabel": "ইমেইল",
-      "email": "hello@dreamvalleyagro.com",
+      "email": "mahmudulhasan1937@gmail.com",
       "addressLabel": "ঠিকানা",
-      "address": "ড্রিম ভ্যালি অ্যাগ্রো, ঢাকা, বাংলাদেশ",
+      "address": "ড্রিম ভ্যালি অ্যাগ্রো, চুয়াডাঙ্গা, খুলনা, বাংলাদেশ",
       "hoursLabel": "খোলার সময়",
-      "hours": "শনি – বৃহস্পতি · সকাল ৯:০০ – সন্ধ্যা ৭:০০",
-      "formTitle": "বার্তা পাঠান",
-      "name": "আপনার নাম",
-      "emailField": "ইমেইল ঠিকানা",
-      "subject": "বিষয়",
-      "message": "আপনার বার্তা",
-      "send": "বার্তা পাঠান",
-      "sent": "আপনার ইমেইল অ্যাপ খুলছে…"
+      "hours": "২৪/৭",
+      "socialTitle": "আমাদের সাথে যুক্ত হন",
+      "socialText": "সোশ্যাল মিডিয়ায় আমাদের ফলো করুন এবং যেকোনো সময় মেসেজ করুন — আমরা দ্রুত উত্তর দিই।",
+      "facebook": "ফেসবুক",
+      "facebookHandle": "Dream Valley Agro",
+      "instagram": "ইনস্টাগ্রাম",
+      "instagramHandle": "@mahmudulhasan08",
+      "youtube": "ইউটিউব",
+      "youtubeHandle": "@dreamvalleyagro2.00",
+      "whatsapp": "হোয়াটসঅ্যাপ",
+      "whatsappHandle": "আমাদের সাথে চ্যাট করুন"
     },
     "cart": {
       "title": "কার্ট",
@@ -295,11 +304,22 @@
     "nav": {
       "dashboard": "ড্যাশবোর্ড",
       "products": "পণ্য",
+      "fruitTrees": "ফলের গাছ",
       "trees": "গাছ",
       "categories": "ক্যাটাগরি",
       "orders": "অর্ডার",
       "courier": "কুরিয়ার",
-      "customers": "কাস্টমার"
+      "customers": "কাস্টমার",
+      "sectionOverview": "সারসংক্ষেপ",
+      "sectionCatalog": "ক্যাটালগ",
+      "sectionSales": "সেলস",
+      "sectionPeople": "গ্রাহক"
+    },
+    "quick": {
+      "addProduct": "+ পণ্য যোগ করুন",
+      "manageFruitTrees": "ফলের গাছ নিয়ন্ত্রণ",
+      "manageTrees": "গাছ নিয়ন্ত্রণ",
+      "viewOrders": "অর্ডার দেখুন"
     },
     "login": {
       "email": "ইমেইল",
@@ -323,7 +343,9 @@
       "products": "পণ্য",
       "recentOrders": "সাম্প্রতিক অর্ডার",
       "noOrders": "এখনো কোনো অর্ডার নেই।",
-      "loading": "ড্যাশবোর্ড লোড হচ্ছে…"
+      "loading": "ড্যাশবোর্ড লোড হচ্ছে…",
+      "fruitTreeItems": "ফলের গাছের ভ্যারিয়েন্ট",
+      "treeTypes": "গাছের ধরন"
     },
     "table": {
       "order": "অর্ডার",
@@ -346,6 +368,11 @@
       "add": "+ পণ্য যোগ করুন",
       "loading": "পণ্য লোড হচ্ছে…",
       "empty": "এখনো কোনো পণ্য নেই। যোগ করতে “পণ্য যোগ করুন” ক্লিক করুন।",
+      "searchPlaceholder": "পণ্য খুঁজুন…",
+      "filterCategory": "ক্যাটাগরি অনুযায়ী ফিল্টার",
+      "allCategories": "সব ক্যাটাগরি",
+      "filteredCount": "{{total}}টির মধ্যে {{shown}}টি পণ্য",
+      "noMatches": "আপনার সার্চ বা ফিল্টারের সাথে মেলে এমন কোনো পণ্য নেই।",
       "added": "পণ্য যোগ হয়েছে",
       "updated": "পণ্য আপডেট হয়েছে",
       "deleted": "পণ্য মুছে ফেলা হয়েছে",
@@ -440,6 +467,37 @@
       "statusUpdated": "অর্ডার {{number}} → {{status}}",
       "consignmentCreated": "{{number}}-এর জন্য SteadFast কনসাইনমেন্ট তৈরি হয়েছে: {{id}}",
       "sendToSteadfast": "SteadFast-এ পাঠান"
+    },
+    "fruittrees": {
+      "title": "ফলের গাছ",
+      "subtitle": "ফলের গাছের ভ্যারিয়েন্ট ও ভ্যারিয়েটি নিয়ন্ত্রণ করুন — যোগ, সম্পাদনা, ডিলিট ও ছবি আপলোড",
+      "add": "+ ভ্যারিয়েন্ট যোগ করুন",
+      "addVariety": "ভ্যারিয়েটি",
+      "loading": "ফলের গাছ লোড হচ্ছে…",
+      "empty": "এখনো কোনো ভ্যারিয়েন্ট নেই। “ভ্যারিয়েন্ট যোগ করুন” ক্লিক করে শুরু করুন।",
+      "variantCol": "ভ্যারিয়েন্ট / ভ্যারিয়েটি",
+      "products": "পণ্য",
+      "sort": "ক্রম",
+      "productCount": "{{count}}টি পণ্য",
+      "added": "ভ্যারিয়েন্ট যোগ হয়েছে",
+      "updated": "ভ্যারিয়েন্ট আপডেট হয়েছে",
+      "deleted": "ভ্যারিয়েন্ট ডিলিট হয়েছে",
+      "deleteConfirm": "\"{{name}}\" ডিলিট করবেন? এর ভ্যারিয়েটিগুলো \"{{parent}}\"-এ চলে যাবে, পণ্যগুলোও সেখানে থাকবে।",
+      "editTitle": "ফলের গাছের আইটেম সম্পাদনা",
+      "addTitle": "ফলের গাছের আইটেম যোগ করুন",
+      "nameEn": "নাম (ইংরেজি) *",
+      "nameBn": "নাম (বাংলা)",
+      "parentLabel": "প্যারেন্ট *",
+      "rootParent": "ফলের গাছ (শীর্ষ স্তর)",
+      "sortOrder": "ক্রম",
+      "image": "ছবি",
+      "uploadBtn": "আপলোড",
+      "uploading": "আপলোড হচ্ছে…",
+      "uploadTooLarge": "ছবিটি ৫ মেগাবাইটের কম হতে হবে",
+      "cancel": "বাতিল",
+      "save": "পরিবর্তন সংরক্ষণ",
+      "addSave": "যোগ করুন",
+      "saving": "সংরক্ষণ হচ্ছে…"
     },
     "customers": {
       "count": "{{count}}জন নিবন্ধিত কাস্টমার",

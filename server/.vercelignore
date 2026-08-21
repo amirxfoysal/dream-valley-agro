@@ -1,0 +1,5 @@
+.env
+.vercel
+scripts
+src/function.js
+README.md

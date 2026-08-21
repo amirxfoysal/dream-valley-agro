@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiGet } from '../../api/client.js';
+import { apiGet, getAdminToken } from '../../api/client.js';
 import styles from './admin.module.css';
 
 function formatBDT(n) {
@@ -35,8 +35,6 @@ export default function Customers() {
   const [history, setHistory] = useState(null);
   const [historyLoading, setHistoryLoading] = useState(true);
 
-  const token = localStorage.getItem('dva-admin-token');
-
   const showToast = useCallback((msg) => {
     setToast(msg);
     setTimeout(() => setToast(''), 2600);
@@ -45,6 +43,7 @@ export default function Customers() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const token = await getAdminToken();
       const data = await apiGet(token, '/admin/customers');
       setCustomers(data);
     } catch (err) {
@@ -52,7 +51,7 @@ export default function Customers() {
     } finally {
       setLoading(false);
     }
-  }, [token, showToast]);
+  }, [showToast]);
 
   useEffect(() => {
     load();
@@ -62,6 +61,7 @@ export default function Customers() {
     setHistory(customer);
     setHistoryLoading(true);
     try {
+      const token = await getAdminToken();
       const orders = await apiGet(token, `/admin/customers/${customer.firebaseUid}/orders`);
       setHistory({ ...customer, orders });
     } catch (err) {

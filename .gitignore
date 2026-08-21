@@ -3,3 +3,5 @@
 .DS_Store.firebase/
 firebase-debug.log
 uireport-debug.log
+.vercel
+.env*

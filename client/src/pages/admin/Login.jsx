@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '../../context/AdminAuthContext.jsx';
@@ -12,6 +12,13 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Don't replay a stale error from a previous visit.
+  useEffect(() => () => setError(''), [setError]);
+  useEffect(() => {
+    if (error) setError('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();

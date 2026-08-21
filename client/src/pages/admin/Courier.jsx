@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiGet, apiPost } from '../../api/client.js';
+import { apiGet, apiPost, getAdminToken } from '../../api/client.js';
 import styles from './admin.module.css';
 
 const trackingBadge = (status) => {
@@ -50,7 +50,7 @@ export default function Courier() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const status = await apiGet(token, '/admin/courier/status');
       setData(status);
     } catch (err) {
@@ -67,7 +67,7 @@ export default function Courier() {
   const sendOrder = async (order) => {
     setBusyId(`send-${order._id}`);
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const updated = await apiPost(token, `/admin/courier/${order._id}/send`, {});
       showToast(t('admin.courier.sent', {
         number: order.orderNumber,
@@ -84,7 +84,7 @@ export default function Courier() {
   const syncOne = async (order) => {
     setBusyId(`sync-${order._id}`);
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const result = await apiPost(token, `/admin/courier/${order._id}/sync`, {});
       showToast(t('admin.courier.syncedOne', {
         number: result.orderNumber,
@@ -101,7 +101,7 @@ export default function Courier() {
   const syncAll = async () => {
     setSyncingAll(true);
     try {
-      const token = localStorage.getItem('dva-admin-token');
+      const token = await getAdminToken();
       const result = await apiPost(token, '/admin/courier/sync', {});
       const errMsg = result.errors?.length ? t('admin.courier.failed', { count: result.errors.length }) : '';
       showToast(`${t('admin.courier.syncedAll', { count: result.synced })}${errMsg}`, result.errors?.length > 0);
